@@ -3,6 +3,8 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AddConnectionWizardComponent } from "@connections/add-connection-wizard/add-connection-wizard.component";
+import { ConnectionTypeCardComponent } from "@connections/connection-type-cards/connection-type-card/connection-type-card.component";
+import { ConnectionTypeCardsComponent } from "@connections/connection-type-cards/connection-type-cards.component";
 import { ConnectionService } from "@connections/shared/connection.service";
 import { MockConnectionService } from "@connections/shared/mock-connection.service";
 import { AppSettingsService } from "@core/app-settings.service";
@@ -19,7 +21,8 @@ describe("AddConnectionComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ CoreModule, PatternFlyNgModule, FormsModule, ReactiveFormsModule, RouterTestingModule, SharedModule ],
-      declarations: [ AddConnectionComponent, AddConnectionWizardComponent ],
+      declarations: [ AddConnectionComponent, AddConnectionWizardComponent,
+                      ConnectionTypeCardComponent, ConnectionTypeCardsComponent ],
       providers: [
         { provide: AppSettingsService, useClass: MockAppSettingsService },
         { provide: ConnectionService, useClass: MockConnectionService },

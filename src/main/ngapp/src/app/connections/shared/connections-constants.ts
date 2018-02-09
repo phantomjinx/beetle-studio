@@ -23,6 +23,9 @@ export class ConnectionsConstants {
   public static readonly addConnectionRoute = ConnectionsConstants.connectionsRootRoute + "/add-connection";
   public static readonly addConnectionPath = ConnectionsConstants.connectionsRootPath + "/add-connection";
 
+  public static readonly serviceCatalogSourcesRootRoute = "serviceCatalogSources";
+  public static readonly serviceCatalogSourcesRootPath = "/" + ConnectionsConstants.serviceCatalogSourcesRootRoute;
+
   public static driverNamePropertyLabel = "Driver Name";
   public static jndiNamePropertyLabel = "JNDI Name";
   public static serviceCatalogSourceNameLabel = "Service Catalog Source";
