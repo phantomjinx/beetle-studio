@@ -34,7 +34,7 @@ export class CanvasGraph {
   private options: any
   private _nodes: CanvasNode[] = [];
   private _links: CanvasLink[] = [];
-
+  private maxNodes: number = 0;
 
   public ticker: EventEmitter<cola.Layout> = new EventEmitter();
   public nodesSelected: EventEmitter<CanvasNode[]> = new EventEmitter();
@@ -94,7 +94,7 @@ export class CanvasGraph {
                    .flowLayout("x", 150)
                    .symmetricDiffLinkLengths(30)
                    .avoidOverlaps(true)
-                   .handleDisconnected(false)
+                   .handleDisconnected(true)
                    .nodes(this.nodes)
                    .links(this.links);
 
@@ -180,16 +180,66 @@ export class CanvasGraph {
     //
     canvasNode.setFixed(true);
 
-    //
-    // Always start at here so the nodes flow left -> right
-    //
-    canvasNode.x = 250;
-    canvasNode.y = 100 * (this.nodes.length + 1);
+    const firstX = 250;
+    const firstY = 100;
+    const numRows = 3;
+    let nodeX = -1;
+    let nodeY = -1;
+
+    if (this.maxNodes === 0) {
+      //
+      // First node being added so
+      // artificially increment
+      this.maxNodes = 1;
+    }
+
+    for (let i = 1; i <= this.maxNodes; ++i) {
+      let x = firstX * i;
+
+      for (let j = 1; j <= numRows ; ++j) {
+        let y = firstY * j;
+
+        let free = true;
+        for (let node of this.nodes) {
+          if (node.x === x && node.y === y) {
+            free = false;
+            break;
+          }
+        }
+
+        if (free) {
+          //
+          // Found a free position
+          // so breakout loop
+          //
+          nodeX = x;
+          nodeY = y;
+          break;
+        }
+      }
+
+      if (nodeX > 0) {
+        //
+        // nodeX has been allocated
+        // so breakout loop
+        break;
+      }
+    }
+
+    canvasNode.x = nodeX;
+    canvasNode.y = nodeY;
 
     this._nodes.push(canvasNode);
 
     if (update !== undefined && update)
       this.canvasService.update(true);
+
+    //
+    // Track the maximum nodes added to this graph
+    // so that the position can be correctly calculated
+    // even if nodes are removed
+    //
+    this.maxNodes = Math.max(this.nodes.length, this.maxNodes);
 
     return canvasNode;
   }
@@ -321,6 +371,8 @@ export class CanvasGraph {
 
     if (!this.layout)
       return; // nothing to do
+
+    this.fixNodes();
 
     //
     // Restarting the layout internal timer
